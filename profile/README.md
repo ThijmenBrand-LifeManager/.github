@@ -26,10 +26,21 @@
 2. Paste the database passwords into the respective fields in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
 3. Paste the `jwt secret` into its respective field in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
 
-### Step 5: Connect to the AKS cluster localy
+### Step 5: Deploy helm charts
 1. Run the following command to get the credentials for the [AKS cluster](https://portal.azure.com/#@thijmenik.onmicrosoft.com/resource/subscriptions/fb2cae0e-2fab-42f5-96fe-c8a6c4a7559c/resourceGroups/lfm-rg-dev/providers/Microsoft.ContainerService/managedClusters/lfm-dev-k8s/overview)
 ```bash
 $ az aks get-credentials --resource-group lfm-rg-dev --name lfm-dev-k8s --overwrite-existing
+```
+2. Install the nginx ingress on AKS
+install nginx ingress helm repository on AKS using the following commands:
+
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
+  --set controller.service.externalTrafficPolicy=Local
 ```
 2. Create the image pull secret using the follwoing command:
 ```bash
