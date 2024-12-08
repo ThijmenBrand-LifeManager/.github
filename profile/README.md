@@ -18,6 +18,29 @@
 1. Navigate to the Infrastructure repository > [github actions](https://github.com/ThijmenBrand-LifeManager/infrastructure/actions)
 2. Run the [Deploy azure infrastructure](https://github.com/ThijmenBrand-LifeManager/infrastructure/actions/workflows/deploy_infra.yaml) pipeline.
 
+### Step 4: Copy the secrets into the helm values
+1. Navigate to the [service bus](https://portal.azure.com/#@thijmenik.onmicrosoft.com/resource/subscriptions/fb2cae0e-2fab-42f5-96fe-c8a6c4a7559c/resourceGroups/lfm-rg-dev/providers/Microsoft.ServiceBus/namespaces/lfm-dev-servicebus/saskey).
+1.1. copy the SAS Policy connection string
+1.2. Paste the value in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file
+
+2. Paste the database passwords into the respective fields in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
+3. Paste the `jwt secret` into its respective field in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
+
+### Step 5: Connect to the AKS cluster localy
+1. Run the following command to get the credentials for the [AKS cluster](https://portal.azure.com/#@thijmenik.onmicrosoft.com/resource/subscriptions/fb2cae0e-2fab-42f5-96fe-c8a6c4a7559c/resourceGroups/lfm-rg-dev/providers/Microsoft.ContainerService/managedClusters/lfm-dev-k8s/overview)
+```bash
+$ az aks get-credentials --resource-group lfm-rg-dev --name lfm-dev-k8s --overwrite-existing
+```
+2. Create the image pull secret using the follwoing command:
+```bash
+$ kubectl create secret docker-registry ghcr-pullsec --docker-server=https://ghcr.io/ --docker-username=ThijmenBrand --docker-password=
+```
+3. Navigate to the `infrastructure/kubernetes` directory
+4. Run `helm install`
+```bash
+$ helm install lifemanager .
+```
+
 ## Hi there 👋
 
 <!--
