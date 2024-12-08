@@ -26,10 +26,21 @@
 2. Paste the database passwords into the respective fields in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
 3. Paste the `jwt secret` into its respective field in the [values.yaml](https://github.com/ThijmenBrand-LifeManager/infrastructure/blob/master/kubernetes/values.yaml) file.
 
+### Step 5: Set database permissions
+1. Go into the database
+2. Run the following command for the respective users in the respective database
+```sql
+# lfm-workstream database
+GRANT ALL PRIVILEGES ON SCHEMA public TO lfm_workstream_service;
+
+# lfm-authorization database
+GRANT ALL PRIVILEGES ON SCHEMA public TO lfm_authorization_service;
+```
+
 ### Step 5: Deploy helm charts
 1. Run the following command to get the credentials for the [AKS cluster](https://portal.azure.com/#@thijmenik.onmicrosoft.com/resource/subscriptions/fb2cae0e-2fab-42f5-96fe-c8a6c4a7559c/resourceGroups/lfm-rg-dev/providers/Microsoft.ContainerService/managedClusters/lfm-dev-k8s/overview)
 ```bash
-$ az aks get-credentials --resource-group lfm-rg-dev --name lfm-dev-k8s --overwrite-existing
+az aks get-credentials --resource-group lfm-rg-dev --name lfm-dev-k8s --overwrite-existing
 ```
 2. Install the nginx ingress on AKS
 install nginx ingress helm repository on AKS using the following commands:
@@ -44,13 +55,25 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
 ```
 2. Create the image pull secret using the follwoing command:
 ```bash
-$ kubectl create secret docker-registry ghcr-pullsec --docker-server=https://ghcr.io/ --docker-username=ThijmenBrand --docker-password=
+kubectl create secret docker-registry ghcr-pullsec --docker-server=https://ghcr.io/ --docker-username=ThijmenBrand --docker-password=
 ```
 3. Navigate to the `infrastructure/kubernetes` directory
 4. Run `helm install`
 ```bash
-$ helm install lifemanager .
+helm install lifemanager .
 ```
+
+### Step 6: See the deployed result!
+The charts and installed and deployed and voila
+1. Run the following command to find the ingress external IP
+```bash
+kubectl get ingress
+
+#Expected result
+NAME          CLASS   HOSTS   ADDRESS         PORTS   AGE
+lfm-ingress   nginx   *       <IPADDRES>      80      2m56s
+```
+2. Navigate to [http]
 
 ## Hi there 👋
 
