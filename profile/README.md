@@ -1,3 +1,11 @@
+# Not maintained!
+⚠️⚠️⚠️
+This organization was part of a university project, and is not actively worked on anymore!
+⚠️⚠️⚠️
+
+
+
+
 ## Demo steps
 ### Step 1: Deploy github actions azure infrastructure
 1. Navigate to `infrastructure/terraform/github-deployment`
